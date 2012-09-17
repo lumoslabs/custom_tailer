@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+require 'custom_tailer'
+require 'optparse'
+
+options = {}
+
+op = OptionParser.new do |opts|
+  opts.on("-c", "--config-file FILE", "Configuration file") do |f|
+    options[:config_file] = f
+  end
+
+  opts.parse! ARGV
+end
+
+CustomTailer.new(options)
+
+# vim: set filetype=ruby
