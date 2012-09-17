@@ -1,0 +1,19 @@
+# This is an example configuration file for custom_tailer.
+
+statsd 'http://stats.mycompany.com', :port => 5003
+
+tailer "/var/log/haproxy/haproxy.log" do |t|
+  # See http://rubular.com/r/rn5jL9MntQ
+  # Matches an haproxy 1.3 log entry
+  t.regexp = /^(\w+ \d+ \S+) (\S+) (\S+)\[(\d+)\]: (\S+):(\d+) \[(\S+)\] (\S+) (\S+)\/(\S+) (\d+)\/(\d+)\/(\d+)\/(\d+)\/(\d*) (\d{3}) (\d+) (\S+) (\S+) (\S+) (\d+)\/(\d+)\/(\d+)\/(\d+)\/(\d*) (\d+)\/(\d+) "(.+)"$/
+
+  # Generate a statsd increment metric including the HTTP response code
+  # and backend name, e.g. haproxy.500.nginx_app_server10.reqs
+  t.metric do |m|
+    m.type = :increment
+    m.path = "haproxy.#{m.matches(16)}.#{m.matches(10)}.reqs"
+  end
+end
+
+# vim: set filetype=ruby
+
